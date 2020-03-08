@@ -45,7 +45,8 @@ class State {
             return NULL;
         };
 
-        // Only allow the id to be set once
+        // Only allow the id to be set once, relative to the complete
+        // history of state transitions taken by the Machine object.
         // This is only used for debugging
         void setId(int id) {
             if(this->id == 0) {
@@ -94,14 +95,13 @@ class Machine {
         queue<Transition<T>> history;
 
         void progress(T input) {
-            // Assign each state a numeric id in the order in which
-            // it is encountered as the machine is progressed.
-
             Transition<T> *t = this->current_state->transition(input);
             if(t == NULL) {
                 throw runtime_error("The transition returned by State<T>::transition(T) cannot be null.");
             } else {
                 history.push(*t);
+                // Assign each state a numeric id in the order in which
+                // it is encountered as the machine is progressed.
                 for(auto s : array<State<T>*, 2>{this->current_state, t->current}) {
                     if(s->getId() == 0)
                         s->setId(++state_count);
