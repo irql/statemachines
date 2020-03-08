@@ -32,6 +32,7 @@ template <class T>
 class State {
     private:
         vector<Edge<T>> *edges;
+        string name;
         int id = 0;
 
     public:
@@ -42,7 +43,7 @@ class State {
                 }
             }
             return NULL;
-        }
+        };
 
         // Only allow the id to be set once
         // This is only used for debugging
@@ -50,16 +51,19 @@ class State {
             if(this->id == 0) {
                 this->id = id;
             }
-        }
+        };
 
-        int getId() { return id; }
+        int getId() { return id; };
 
-        State(vector<Edge<T>> *edges) {
+        string getName() { return name; };
+
+        State(string name, vector<Edge<T>> *edges) {
             this->edges = edges;
+            this->name = name;
 
             if(this->edges == NULL) {
                 throw runtime_error("State<T>::edges cannot be null.");
-            }
+            };
         }
 };
 
@@ -82,6 +86,7 @@ class Machine {
     private:
         State<T> *current_state;
         int state_count = 0;
+        string name;
 
     public:
         queue<Transition<T>> history;
@@ -104,18 +109,22 @@ class Machine {
         }
 
         void debug_history() {
-            cout << typeid(this).name() << endl;
+            cout << name << ":" << typeid(this).name() << endl;
             for(int i = 0; !history.empty();) {
                 Transition<T> t = history.front();
                 history.pop();
                 i += t.latency;
-                cout << t.previous->getId() << " -> " << t.current->getId() << ", " << i << "ns, " << t.latency << "ns" << endl;
+                cout <<
+                    t.previous->getName() << ":" << t.previous->getId() << "\t-> " <<
+                    t.current->getName() << ":" << t.current->getId() << ",\t" <<
+                    i << "ns,\t" << t.latency << "ns" << endl;
             }
             cout << endl;
         };
 
-        Machine(State<T> *initial) {
+        Machine(string name, State<T> *initial) {
             this->current_state = initial;
+            this->name = name;
         }
 };
 
@@ -125,13 +134,13 @@ int main(int argc, char **argv) {
     // no matter what the input is.
     vector<Edge<string>> base_edges;
 
-    State<string> base(&base_edges);
+    State<string> base("nop", &base_edges);
 
     base_edges.push_back(Edge<string>(10, &base, [](string input){
                 return true;
             }));
 
-    Machine<string> nop(&base);
+    Machine<string> nop("nop", &base);
 
     nop.progress("test");
     nop.progress("test");
@@ -144,7 +153,7 @@ int main(int argc, char **argv) {
     // Machine "flip_flop" has two States named "on" and "off."
     //
     vector<Edge<bool>> on_edges, off_edges;
-    State<bool> on(&on_edges), off(&off_edges);
+    State<bool> on("on", &on_edges), off("off", &off_edges);
 
     auto g_true = [](bool input) {
         return input == true;
@@ -160,7 +169,7 @@ int main(int argc, char **argv) {
     off_edges.push_back(Edge<bool>(15, &off, g_false));
 
     // It is initialized in the "on" state.
-    Machine<bool> flip_flop(&on);
+    Machine<bool> flip_flop("flip_flop", &on);
 
     flip_flop.progress(false);
     flip_flop.progress(true);
