@@ -68,10 +68,11 @@ class Machine {
 
         void progress(T input);
         void debug_history() {
-            while(!history.empty()) {
+            for(int i = 0; !history.empty();) {
                 Transition<string> t = history.front();
                 history.pop();
-                cout << t.previous << ", " << t.current << ", " << t.latency << endl;
+                i += t.latency;
+                cout << t.previous << ", " << t.current << ", " << i << "ns" << endl;
             }
         };
 
@@ -105,7 +106,7 @@ int main(int argc, char **argv) {
     // no matter what the input is.
     vector<Edge<string>> base_edges;
     State<string> base(&base_edges);
-    base_edges.push_back(Edge<string>(0, &base, [](string input){
+    base_edges.push_back(Edge<string>(10, &base, [](string input){
                 return true;
             }));
     Machine<string> nop(&base);
