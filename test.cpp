@@ -156,7 +156,7 @@ int main(int argc, char **argv) {
 
     nop.debug_history();
 
-    // https://bit.ly/2TwTP9v
+    // http://bit.ly/2TzOiPH
     //
     // Machine<bool> flip_flop has two States named "on" and "off",
     // and four Edge objects defined across these states; one
