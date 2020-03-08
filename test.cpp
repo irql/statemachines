@@ -131,9 +131,11 @@ class Machine {
 };
 
 int main(int argc, char **argv) {
-    // Machine "nop" has one State named "base", which has
+
+    // Machine<string> nop has one State named "base", which has
     // one Edge that always transitions back into itself
     // no matter what the input is.
+    //
     vector<Edge<string>> base_edges;
 
     State<string> base("nop", &base_edges);
@@ -152,7 +154,13 @@ int main(int argc, char **argv) {
 
     nop.debug_history();
 
-    // Machine "flip_flop" has two States named "on" and "off."
+    // Machine<bool> flip_flop has two States named "on" and "off",
+    // and four Edge objects defined across these states; one
+    // Edge object transitions from "on" to "off" on an input
+    // of true, one additional object transfers from "off" to
+    // "on" on true, and two additional objects transition from
+    // "on" to "on" and "off" back to "off" upon an input of
+    // false, respectively.
     //
     vector<Edge<bool>> on_edges, off_edges;
     State<bool> on("on", &on_edges), off("off", &off_edges);
@@ -164,10 +172,14 @@ int main(int argc, char **argv) {
         return input == false;
     };
 
+    // on -[true]->  off
     on_edges.push_back(Edge<bool>(15, &off, g_true));
+    // on -[false]-> on
     on_edges.push_back(Edge<bool>(15, &on, g_false));
 
+    // off -[true]->  on
     off_edges.push_back(Edge<bool>(15, &on, g_true));
+    // off -[false]-> off
     off_edges.push_back(Edge<bool>(15, &off, g_false));
 
     // It is initialized in the "on" state.
