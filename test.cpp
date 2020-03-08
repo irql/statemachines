@@ -132,6 +132,8 @@ class Machine {
 
 int main(int argc, char **argv) {
 
+    // http://bit.ly/2TBhvdf
+    //
     // Machine<string> nop has one State named "base", which has
     // one Edge that always transitions back into itself
     // no matter what the input is.
@@ -154,10 +156,12 @@ int main(int argc, char **argv) {
 
     nop.debug_history();
 
+    // https://bit.ly/2TwTP9v
+    //
     // Machine<bool> flip_flop has two States named "on" and "off",
     // and four Edge objects defined across these states; one
     // Edge object transitions from "on" to "off" on an input
-    // of true, one additional object transfers from "off" to
+    // of true, one additional object transitions from "off" to
     // "on" on true, and two additional objects transition from
     // "on" to "on" and "off" back to "off" upon an input of
     // false, respectively.
