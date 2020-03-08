@@ -6,58 +6,20 @@ Of course, the state machine is a useful concept to leverage in building, monito
 
 The true barrier to automation of any kind is not simply the ability to programmatically perform the task, but the ability to programmatically validate that the expected result occurs with the highest possible degree of accuracy, and if it deviates, report the difference to the highest possible degree of precision. For software and infrastructure that is already deployed, having a live monitoring system is paramount to application health and stability for this reason. But for software and infrastructure that is not deployed, and not yet designed, is it possible to use machine learning to optimize the design of any service or infrastructure by allowing the computer to model their components using interconnected webs of asynchronous finite state machines, i.e. for a single machine to be able to accurately predict the state of an enire distributed system?
 
-## Data structures
+## Classes
 
-### State Machines
+### Machine
 
-```
-template <class T>
-class StateMachine {
-    State *current_state;
+Contains the current state the machine is in, and keeps a record of all `Transition` objects generated each time `Machine::progress()` is run.
 
-    void input(T t) {
-        current_state = current_state->input(t);
-    };
-};
-```
+### State
 
-### States
+Contains a vector of `Edge` objects, each of which describe one possible transition from this state into another.
 
-```
-template <class T>
-class State {
-    std::vector<struct edge> edges;
-    std::queue<struct transition> transitions;
-    State<T> *input(T t) {
-        for(auto edge : edges) {
-            if(edge->transition(t)) {
-                transitions.push({&this, edge});
-                return edge->next;
-            }
-        }
-        return NULL;
-    };
-};
-```
+### Edge
 
-### Edges
+Contains a reference to another state, along with a function pointer to a function called with the input to `Machine::progress()` that should return true if and only if the other state should be entered into.
 
-```
-template <class T>
-struct edge {
-    unsigned long latency, next;
-    bool<T> (*)(T) transition;
-};
-```
+### Transition
 
-### Transitions
-template <class T>
-struct transition {
-    struct edge edge;
-    State *old;
-};
-
-The edges between all other nodes
-
-| XXXX XXXX | YYYY YYYY | ZZZZ ZZZZ | @@@@ @@@@ |
-| State ID  | Latency   | Next Node | func_ptr  |
+Contains a reference to the previous state and the current state, in addition to the latency incurred by making the transition.
