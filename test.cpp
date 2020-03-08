@@ -39,7 +39,7 @@ class State {
         Transition<T> *transition(T input) {
             for(Edge<T> e : *this->edges) {
                 if(e.transition(input)) {
-                    return new Transition<T>(this, e.target, e.latency);
+                    return new Transition<T>(this, e.target, input, e.latency);
                 }
             }
             return NULL;
@@ -73,11 +73,13 @@ class Transition {
         State<T> *previous;
         State<T> *current;
         int latency;
+        T input;
 
-        Transition(State<T> *previous, State<T> *current, int latency) {
+        Transition(State<T> *previous, State<T> *current, T input, int latency) {
             this->previous = previous;
             this->current = current;
             this->latency = latency;
+            this->input = input;
         };
 };
 
@@ -115,7 +117,7 @@ class Machine {
                 history.pop();
                 i += t.latency;
                 cout <<
-                    t.previous->getName() << ":" << t.previous->getId() << "\t-> " <<
+                    t.previous->getName() << ":" << t.previous->getId() << "\t-[" << t.input << "]-> " <<
                     t.current->getName() << ":" << t.current->getId() << ",\t" <<
                     i << "ns,\t" << t.latency << "ns" << endl;
             }
