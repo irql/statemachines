@@ -84,15 +84,18 @@ class Transition {
         };
 };
 
+#define STRINGIFY(X) #X
+#define MACHINE(x, y, z) Machine<x> y(STRINGIFY(y), z);
+
 template <class T>
 class Machine {
     private:
+        queue<Transition<T>> history;
         State<T> *current_state;
         int state_count = 0;
         string name;
 
     public:
-        queue<Transition<T>> history;
 
         void progress(T input) {
             Transition<T> *t = this->current_state->transition(input);
@@ -146,7 +149,7 @@ int main(int argc, char **argv) {
                 return true;
             }));
 
-    Machine<string> nop("nop", &base);
+    MACHINE(string, nop, &base);
 
     nop.progress("test");
     nop.progress("test");
@@ -187,7 +190,7 @@ int main(int argc, char **argv) {
     off_edges.push_back(Edge<bool>(15, &off, g_false));
 
     // It is initialized in the "on" state.
-    Machine<bool> flip_flop("flip_flop", &on);
+    MACHINE(bool, flip_flop, &on);
 
     flip_flop.progress(false);
     flip_flop.progress(true);
