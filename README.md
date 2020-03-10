@@ -8,6 +8,10 @@ The true barrier to automation of any kind is not simply the ability to programm
 
 ## Classes
 
+### Runtime
+
+Each time some transition occurs from one state to another, it may have an optional side effect, which is defined in the Edge object inside which the transition was made. This side effect is *highly* encouraged to consume only methods from the `Machine<T>::runtime` object, with the requirement that this class- whatever it is- extend the base virtual `std::vector<T> Runtime<T>::dispatch(string method, std::vector<T> arguments)` method; calling this method can be thought of as the state machine making a "system call," and both the arguments as well as the return value must be the same type as the machine type `T`.
+
 ### Machine
 
 Contains the current state the machine is in, and keeps a record of all `Transition` objects generated each time `Machine::progress()` is run.
