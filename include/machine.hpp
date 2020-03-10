@@ -9,7 +9,7 @@
 #define MACHINE_HPP_INCLUDED
 
 #define STRINGIFY(X) #X
-#define MACHINE(x, y, z) Machine<x> y(STRINGIFY(y), RuntimeStack<x>(), z);
+#define MACHINE(x, y, z) Machine<x> y(STRINGIFY(y), z);
 
 namespace machine {
 
@@ -26,6 +26,7 @@ class Edge {
         State<T> *target;
 
         bool (*transition)(T input) = NULL; // MAXIMUM DANGER
+        void (*side_effect)(T input, Runtime<T> *runtime) = NULL;
 
         Edge(int latency, State<T> *target, bool (*transition)(T input)) {
             this->latency = latency;
@@ -46,9 +47,12 @@ class State {
         int id = 0;
 
     public:
-        Transition<T> *transition(T input) {
+        Transition<T> *transition(T input, Runtime<T> *runtime) {
             for(Edge<T> e : *this->edges) {
                 if(e.transition(input)) {
+                    if(e.side_effect != NULL) {
+                        e.side_effect(input, runtime);
+                    }
                     return new Transition<T>(this, e.target, input, e.latency);
                 }
             }
@@ -106,7 +110,7 @@ class Machine {
     public:
 
         void progress(T input) {
-            Transition<T> *t = this->current_state->transition(input);
+            Transition<T> *t = this->current_state->transition(input, &runtime);
             if(t == NULL) {
                 throw std::runtime_error("The transition returned by State<T>::transition(T) cannot be null.");
             } else {
@@ -135,6 +139,11 @@ class Machine {
             std::cout << std::endl;
         }
 
+        Machine(std::string name, State<T> *initial) {
+            this->current_state = initial;
+            this->name = name;
+        }
+
         Machine(std::string name, Runtime<T> runtime, State<T> *initial) {
             this->current_state = initial;
             this->runtime = runtime;
@@ -144,7 +153,9 @@ class Machine {
 
 template <class T>
 class Runtime {
-    std::vector<T> dispatch(std::string method, std::vector<T> args);
+    std::vector<T> dispatch(std::string method, std::vector<T> args) {
+        throw std::runtime_error("You must override Runtime<T>::dispatch().");
+    }
 };
 
 template <class T>
