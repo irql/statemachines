@@ -80,10 +80,10 @@ int main(int argc, char **argv) {
 
     auto s_hello = [](bool input, runtime::Base<bool> *runtime) -> void {
         if(input) {
-            runtime->dispatch("push", vector<bool>{input});
+            runtime->dispatch_one("push", input);
         }
         else {
-            cout << runtime->dispatch("pop").at(0) << endl;
+            cout << runtime->dispatch_one("pop") << endl;
         }
     };
 

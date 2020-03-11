@@ -9,8 +9,17 @@ template <class T>
 class Base {
 public:
     virtual std::vector<T> dispatch(std::string method, std::vector<T> args) = 0;
+
     std::vector<T> dispatch(std::string method) {
         return this->dispatch(method, std::vector<T>());
+    }
+
+    std::vector<T> dispatch_one(std::string method, T arg) {
+        return this->dispatch(method, std::vector<T>{arg});
+    }
+
+    T dispatch_one(std::string method) {
+        return this->dispatch(method).at(0);
     }
 };
 
