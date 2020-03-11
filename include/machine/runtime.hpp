@@ -27,7 +27,7 @@ public:
         } else if(method == "pop") {
             T top = this->stack.top();
             this->stack.pop();
-            return std::vector<T>(top);
+            return std::vector<T>{top};
         }
         return std::vector<T>();
     }
