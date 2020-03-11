@@ -27,7 +27,7 @@ class Edge {
         State<T> *target;
 
         bool (*transition)(T input) = NULL; // MAXIMUM DANGER
-        void (*side_effect)(T input, runtime::Runtime<T> *runtime) = NULL;
+        void (*side_effect)(T input, runtime::Base<T> *runtime) = NULL;
 
         Edge(int latency, State<T> *target, bool (*transition)(T input)) {
             this->latency = latency;
@@ -43,7 +43,7 @@ class Edge {
             int      latency,
             State<T> *target,
             bool     (*transition)(T input),
-            void     (*side_effect)(T input, runtime::Runtime<T> *runtime)
+            void     (*side_effect)(T input, runtime::Base<T> *runtime)
         ) :
             Edge ( latency, target, transition )
         {
@@ -59,7 +59,7 @@ class State {
         int id = 0;
 
     public:
-        Transition<T> *transition(T input, runtime::Runtime<T> *runtime) {
+        Transition<T> *transition(T input, runtime::Base<T> *runtime) {
             for(Edge<T> e : *this->edges) {
                 if(e.transition(input)) {
                     if(e.side_effect != NULL) {
@@ -116,13 +116,13 @@ class Machine {
         std::queue<Transition<T>> history;
         State<T> *current_state;
         int state_count = 0;
-        runtime::Runtime<T> runtime;
+        runtime::Base<T> *runtime;
         std::string name;
 
     public:
 
         void progress(T input) {
-            Transition<T> *t = this->current_state->transition(input, &runtime);
+            Transition<T> *t = this->current_state->transition(input, runtime);
             if(t == NULL) {
                 throw std::runtime_error("The transition returned by State<T>::transition(T) cannot be null.");
             } else {
@@ -156,10 +156,14 @@ class Machine {
             this->name = name;
         }
 
-        Machine(std::string name, runtime::Runtime<T> runtime, State<T> *initial) {
-            this->current_state = initial;
+        Machine (
+            std::string      name,
+            State<T>         *initial,
+            runtime::Base<T> *runtime
+        )
+            : Machine(name, initial)
+        {
             this->runtime = runtime;
-            this->name = name;
         }
 };
 

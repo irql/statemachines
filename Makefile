@@ -9,7 +9,7 @@ clean:
 
 all: $(OUT)
 
-$(OUT): *.cpp include/*.hpp
+$(OUT): *.cpp include/*.hpp include/machine/*.hpp
 	$(CC) $(CC_OPTS) -o $(OUT) *.cpp
 
 test: $(OUT)

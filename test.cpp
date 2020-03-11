@@ -3,7 +3,6 @@
 
 #include "include/machine.hpp"
 
-using namespace machine::runtime;
 using namespace machine;
 using namespace std;
 
@@ -52,19 +51,16 @@ int main(int argc, char **argv) {
     auto g_false = [](bool input) {
         return input == false;
     };
-    auto s_hello = [](bool input, Runtime<bool> *runtime) -> void {
-        cout << "Hello from side_effect" << endl;
-    };
 
     // on -[true]->  off
-    on_edges.push_back(Edge<bool>(15, &off, g_true, s_hello));
+    on_edges.push_back(Edge<bool>(15, &off, g_true));
     // on -[false]-> on
-    on_edges.push_back(Edge<bool>(15, &on, g_false, s_hello));
+    on_edges.push_back(Edge<bool>(15, &on, g_false));
 
     // off -[true]->  on
-    off_edges.push_back(Edge<bool>(15, &on, g_true, s_hello));
+    off_edges.push_back(Edge<bool>(15, &on, g_true));
     // off -[false]-> off
-    off_edges.push_back(Edge<bool>(15, &off, g_false, s_hello));
+    off_edges.push_back(Edge<bool>(15, &off, g_false));
 
     // It is initialized in the "on" state.
     MACHINE(bool, flip_flop, &on);
@@ -75,6 +71,32 @@ int main(int argc, char **argv) {
     flip_flop.progress(true);
 
     flip_flop.debug_history();
+
+    // Create a basic stack machine, using the runtime::Stack<bool>
+    // machine interface / runtime / API.
+    runtime::Stack<bool> stack_api;
+    vector<Edge<bool>> block_edges;
+    State<bool> block("block", &block_edges);
+
+    auto s_hello = [](bool input, runtime::Base<bool> *runtime) -> void {
+        if(input) {
+            runtime->dispatch("push", vector<bool>{input});
+        }
+        else {
+            cout << runtime->dispatch("pop").at(0) << endl;
+        }
+    };
+
+    block_edges.push_back(Edge<bool>(5, &block, [](bool input) {
+                    return true;
+                }, s_hello));
+    Machine<bool> stack_machine("stack_machine", &block, &stack_api);
+
+    stack_machine.progress(true);
+    stack_machine.progress(true);
+    stack_machine.progress(false);
+
+    stack_machine.debug_history();
 
     return 0;
 }
