@@ -3,6 +3,7 @@
 
 #include "include/machine.hpp"
 
+using namespace machine::runtime;
 using namespace machine;
 using namespace std;
 

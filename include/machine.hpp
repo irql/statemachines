@@ -1,3 +1,6 @@
+#ifndef MACHINE_HPP_INCLUDED
+#define MACHINE_HPP_INCLUDED
+
 #include <iostream>
 #include <string>
 #include <vector>
@@ -5,8 +8,7 @@
 #include <queue>
 #include <stack>
 
-#ifndef MACHINE_HPP_INCLUDED
-#define MACHINE_HPP_INCLUDED
+#include "machine/runtime.hpp"
 
 #define STRINGIFY(X) #X
 #define MACHINE(x, y, z) Machine<x> y(STRINGIFY(y), z);
@@ -14,7 +16,6 @@
 namespace machine {
 
 template <class T> class Transition;
-template <class T> class Runtime;
 template <class T> class Machine;
 template <class T> class State;
 template <class T> class Edge;
@@ -26,7 +27,7 @@ class Edge {
         State<T> *target;
 
         bool (*transition)(T input) = NULL; // MAXIMUM DANGER
-        void (*side_effect)(T input, Runtime<T> *runtime) = NULL;
+        void (*side_effect)(T input, runtime::Runtime<T> *runtime) = NULL;
 
         Edge(int latency, State<T> *target, bool (*transition)(T input)) {
             this->latency = latency;
@@ -42,7 +43,7 @@ class Edge {
             int      latency,
             State<T> *target,
             bool     (*transition)(T input),
-            void     (*side_effect)(T input, Runtime<T> *runtime)
+            void     (*side_effect)(T input, runtime::Runtime<T> *runtime)
         ) :
             Edge ( latency, target, transition )
         {
@@ -58,7 +59,7 @@ class State {
         int id = 0;
 
     public:
-        Transition<T> *transition(T input, Runtime<T> *runtime) {
+        Transition<T> *transition(T input, runtime::Runtime<T> *runtime) {
             for(Edge<T> e : *this->edges) {
                 if(e.transition(input)) {
                     if(e.side_effect != NULL) {
@@ -115,7 +116,7 @@ class Machine {
         std::queue<Transition<T>> history;
         State<T> *current_state;
         int state_count = 0;
-        Runtime<T> runtime;
+        runtime::Runtime<T> runtime;
         std::string name;
 
     public:
@@ -155,35 +156,12 @@ class Machine {
             this->name = name;
         }
 
-        Machine(std::string name, Runtime<T> runtime, State<T> *initial) {
+        Machine(std::string name, runtime::Runtime<T> runtime, State<T> *initial) {
             this->current_state = initial;
             this->runtime = runtime;
             this->name = name;
         }
 };
-
-template <class T>
-class Runtime {
-    std::vector<T> dispatch(std::string method, std::vector<T> args) {
-        throw std::runtime_error("You must override Runtime<T>::dispatch().");
-    }
-};
-
-template <class T>
-class RuntimeStack : public Runtime<T> {
-    private:
-        std::stack<T> stack;
-
-    public:
-        std::vector<T> dispatch(std::string method, std::vector<T> args) {
-            if(method == "mirror") {
-                return args;
-            } else {
-                return std::vector<T>();
-            }
-        }
-};
-
 
 } // end namespace
 #endif
