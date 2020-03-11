@@ -51,16 +51,19 @@ int main(int argc, char **argv) {
     auto g_false = [](bool input) {
         return input == false;
     };
+    auto s_hello = [](bool input, Runtime<bool> *runtime) -> void {
+        cout << "Hello from side_effect" << endl;
+    };
 
     // on -[true]->  off
-    on_edges.push_back(Edge<bool>(15, &off, g_true));
+    on_edges.push_back(Edge<bool>(15, &off, g_true, s_hello));
     // on -[false]-> on
-    on_edges.push_back(Edge<bool>(15, &on, g_false));
+    on_edges.push_back(Edge<bool>(15, &on, g_false, s_hello));
 
     // off -[true]->  on
-    off_edges.push_back(Edge<bool>(15, &on, g_true));
+    off_edges.push_back(Edge<bool>(15, &on, g_true, s_hello));
     // off -[false]-> off
-    off_edges.push_back(Edge<bool>(15, &off, g_false));
+    off_edges.push_back(Edge<bool>(15, &off, g_false, s_hello));
 
     // It is initialized in the "on" state.
     MACHINE(bool, flip_flop, &on);

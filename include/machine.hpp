@@ -37,6 +37,17 @@ class Edge {
                 throw std::runtime_error("The Transition<T>::transition() function pointer cannot be null.");
             }
         }
+
+        Edge (
+            int      latency,
+            State<T> *target,
+            bool     (*transition)(T input),
+            void     (*side_effect)(T input, Runtime<T> *runtime)
+        ) :
+            Edge ( latency, target, transition )
+        {
+            this->side_effect = side_effect;
+        }
 };
 
 template <class T>
