@@ -29,26 +29,13 @@ class Edge {
         bool (*transition)(T input) = NULL; // MAXIMUM DANGER
         void (*side_effect)(T input, runtime::Base<T> *runtime) = NULL;
 
-        Edge(int latency, State<T> *target, bool (*transition)(T input)) {
-            this->latency = latency;
-            this->target = target;
-            this->transition = transition;
-
+        Edge(int t, State<T> *tg, bool (*tr)(T input), void (*s)(T, runtime::Base<T>*)) : latency(t), target(tg), transition(tr), side_effect(s) {
             if(this->transition == NULL) {
                 throw std::runtime_error("The Transition<T>::transition() function pointer cannot be null.");
             }
         }
 
-        Edge (
-            int      latency,
-            State<T> *target,
-            bool     (*transition)(T input),
-            void     (*side_effect)(T input, runtime::Base<T> *runtime)
-        ) :
-            Edge ( latency, target, transition )
-        {
-            this->side_effect = side_effect;
-        }
+        Edge(int t, State<T> *tg, bool (*tr)(T)) : Edge(t, tg, tr, nullptr) {}
 };
 
 template <class T>
@@ -84,10 +71,7 @@ class State {
 
         std::string getName() { return name; }
 
-        State(std::string name, std::vector<Edge<T>> *edges) {
-            this->edges = edges;
-            this->name = name;
-
+        State(std::string n, std::vector<Edge<T>> *e) : name(n), edges(e) {
             if(this->edges == NULL) {
                 throw std::runtime_error("State<T>::edges cannot be null.");
             }
@@ -102,12 +86,7 @@ class Transition {
         int latency;
         T input;
 
-        Transition(State<T> *previous, State<T> *current, T input, int latency) {
-            this->previous = previous;
-            this->current = current;
-            this->latency = latency;
-            this->input = input;
-        }
+        Transition(State<T> *ps, State<T> *cs, T i, int t) : previous(ps), current(cs), input(i), latency(t) {}
 };
 
 template <class T>
@@ -151,20 +130,10 @@ class Machine {
             std::cout << std::endl;
         }
 
-        Machine(std::string name, State<T> *initial) {
-            this->current_state = initial;
-            this->name = name;
-        }
+        Machine(std::string n, State<T> *cs, runtime::Base<T> *r) : name(n), current_state(cs), runtime(r) {}
 
-        Machine (
-            std::string      name,
-            State<T>         *initial,
-            runtime::Base<T> *runtime
-        )
-            : Machine(name, initial)
-        {
-            this->runtime = runtime;
-        }
+        Machine(std::string n, State<T> *cs) : Machine(n, cs, nullptr) {}
+
 };
 
 } // end namespace
