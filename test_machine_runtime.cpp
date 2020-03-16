@@ -4,7 +4,7 @@
 #include "include/catch_macros.h"
 #include "include/machine/runtime.hpp"
 
-TEMPLATE_TEST_CASE("machine::runtime::Stack push and pop works", "[runtime]", bool, std::string) {
+TEMPLATE_TEST_CASE("machine::runtime::Stack push and pop works", "[runtime]", bool, std::string, int) {
     machine::runtime::Stack<TestType> stack_api;
     machine::runtime::Base<TestType>  &t_api = stack_api;
 

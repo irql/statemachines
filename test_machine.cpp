@@ -4,7 +4,7 @@
 #include "include/catch_macros.h"
 #include "include/machine.hpp"
 
-TEMPLATE_TEST_CASE("nop machine", "[machine]", bool, std::string) {
+TEMPLATE_TEST_CASE("nop machine", "[machine]", bool, std::string, int) {
     static _args<TestType> args;
 
     std::vector<machine::Edge<TestType>> edges;
