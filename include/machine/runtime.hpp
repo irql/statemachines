@@ -1,25 +1,21 @@
 #ifndef RUNTIME_HPP_INCLUDED
 #define RUNTIME_HPP_INCLUDED
 
+#include <stack>
+
 namespace machine::runtime {
 
-template <class T> class Runtime;
-
-template <class T>
+template <typename T, typename ouT=T>
 class Base {
 public:
-    virtual std::vector<T> dispatch(std::string method, std::vector<T> args) = 0;
+    virtual std::vector<ouT> dispatch(std::string method, std::vector<T> args) = 0;
 
-    std::vector<T> dispatch(std::string method) {
+    std::vector<ouT> dispatch(std::string method) {
         return this->dispatch(method, std::vector<T>());
     }
 
-    std::vector<T> dispatch_one(std::string method, T arg) {
+    std::vector<ouT> dispatch(std::string method, T arg) {
         return this->dispatch(method, std::vector<T>{arg});
-    }
-
-    T dispatch_one(std::string method) {
-        return this->dispatch(method).at(0);
     }
 };
 

@@ -1,5 +1,5 @@
 CC=g++
-CC_OPTS=-std=c++17
+CC_OPTS=-std=c++17 -Wall -I../Catch2/single_include
 OUT=test.exe
 
 .PHONY: clean test

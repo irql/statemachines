@@ -27,3 +27,7 @@ Contains a reference to another state, along with a function pointer to a functi
 ### Transition
 
 Contains a reference to the previous state and the current state, in addition to the latency incurred by making the transition.
+
+# TODO
+* State machine [de]compiler (assember?)
+* More `machine::runtime` choices

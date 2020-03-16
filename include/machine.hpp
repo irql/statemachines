@@ -15,12 +15,12 @@
 
 namespace machine {
 
-template <class T> class Transition;
-template <class T> class Machine;
-template <class T> class State;
-template <class T> class Edge;
+template <typename T> class Transition;
+template <typename T> class Machine;
+template <typename T> class State;
+template <typename T> class Edge;
 
-template <class T>
+template <typename T>
 class Edge {
     public:
         int latency;
@@ -38,7 +38,7 @@ class Edge {
         Edge(int t, State<T> *tg, bool (*tr)(T)) : Edge(t, tg, tr, nullptr) {}
 };
 
-template <class T>
+template <typename T>
 class State {
     private:
         std::vector<Edge<T>> *edges;
@@ -46,7 +46,7 @@ class State {
         int id = 0;
 
     public:
-        Transition<T> *transition(T input, runtime::Base<T> *runtime) {
+        Transition<T> *transition(Machine<T> *machine, T input, runtime::Base<T> *runtime) {
             for(Edge<T> e : *this->edges) {
                 if(e.transition(input)) {
                     if(e.side_effect != NULL) {
@@ -78,7 +78,7 @@ class State {
         }
 };
 
-template <class T>
+template <typename T>
 class Transition {
     public:
         State<T> *previous;
@@ -89,7 +89,7 @@ class Transition {
         Transition(State<T> *ps, State<T> *cs, T i, int t) : previous(ps), current(cs), input(i), latency(t) {}
 };
 
-template <class T>
+template <typename T>
 class Machine {
     private:
         std::queue<Transition<T>> history;
@@ -101,7 +101,7 @@ class Machine {
     public:
 
         void progress(T input) {
-            Transition<T> *t = this->current_state->transition(input, runtime);
+            Transition<T> *t = this->current_state->transition(this, input, runtime);
             if(t == NULL) {
                 throw std::runtime_error("The transition returned by State<T>::transition(T) cannot be null.");
             } else {
