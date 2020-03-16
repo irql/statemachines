@@ -2,17 +2,36 @@
 
 #include "include/machine/runtime.hpp"
 
-TEST_CASE("machine::runtime::Stack<bool> sanity", "[runtime]") {
-    machine::runtime::Stack<bool> stack_api;
-    machine::runtime::Base<bool> &bool_api = stack_api;
-    SECTION("Push and a pop") {
-        bool_api.dispatch("push", true);
-        REQUIRE( bool_api.dispatch("pop").at(0) );
+template<typename T> struct _args {
+    const T v1, v2;
+};
 
-        bool_api.dispatch("push", true);
-        bool_api.dispatch("push", false);
+#define _DEF_ARGS(T, _v1, _v2) \
+    template<> struct _args<T> { T v1 = _v1, v2 = _v2; }
 
-        REQUIRE( !bool_api.dispatch("pop").at(0) );
-        REQUIRE( bool_api.dispatch("pop").at(0) );
-    }
+_DEF_ARGS(bool, true, false);
+_DEF_ARGS(std::string, "A bit of a strange test string.", "¶µ±¼Ø☭");
+
+TEMPLATE_TEST_CASE("machine::runtime::Stack push and pop works", "[runtime]", bool, std::string) {
+    machine::runtime::Stack<TestType> stack_api;
+    machine::runtime::Base<TestType>  &t_api = stack_api;
+
+    struct _args<TestType> args;
+
+    t_api.dispatch("push", args.v1);
+    REQUIRE( args.v1 == t_api.dispatch("pop").at(0) );
+
+    t_api.dispatch("push", args.v1);
+    t_api.dispatch("push", args.v2);
+    REQUIRE( args.v2 == t_api.dispatch("pop").at(0) );
+    REQUIRE( args.v1 == t_api.dispatch("pop").at(0) );
+
+    t_api.dispatch("push", args.v1);
+    t_api.dispatch("push", args.v2);
+    t_api.dispatch("push", args.v2);
+    t_api.dispatch("push", args.v1);
+    REQUIRE( args.v1 == t_api.dispatch("pop").at(0) );
+    REQUIRE( args.v2 == t_api.dispatch("pop").at(0) );
+    REQUIRE( args.v2 == t_api.dispatch("pop").at(0) );
+    REQUIRE( args.v1 == t_api.dispatch("pop").at(0) );
 }
