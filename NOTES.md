@@ -12,9 +12,35 @@ user    1m26.824s
 sys     0m2.433s
 ```
 
-But only 7 seconds on the Dell XPS 15 (under Arch linux)
+But only 26 seconds on the Dell XPS 15 under cygwin
+```
+real    0m26.322s
+user    0m23.701s
+sys     0m0.933s
+```
+
+And only 7 seconds under the Dell XPS 15 running Arch linux
 ```
 real    0m7.933s
 user    0m7.548s
 sys     0m0.342s
+```
+
+And under three seconds on Dell XPS 15 under VC++9.0
+```
+C:\Users\Bryan Concari\src\github.com\interruptrequestlevel\statemachines>make
+ 3:16:15.56
+Microsoft (R) C/C++ Optimizing Compiler Version 19.22.27905 for x64
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+test2.cpp
+Microsoft (R) Incremental Linker Version 14.22.27905.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+/out:test2.exe
+test2.obj
+===============================================================================
+All tests passed (3 assertions in 1 test case)
+
+ 3:16:18.31
 ```
