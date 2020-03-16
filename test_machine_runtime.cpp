@@ -18,20 +18,22 @@ TEMPLATE_TEST_CASE("machine::runtime::Stack push and pop works", "[runtime]", bo
 
     struct _args<TestType> args;
 
-    t_api.dispatch("push", args.v1);
-    REQUIRE( args.v1 == t_api.dispatch("pop").at(0) );
+    SECTION("Push pop, push push pop pop...") {
+        t_api.dispatch("push", args.v1);
+        REQUIRE( args.v1 == t_api.dispatch("pop").at(0) );
 
-    t_api.dispatch("push", args.v1);
-    t_api.dispatch("push", args.v2);
-    REQUIRE( args.v2 == t_api.dispatch("pop").at(0) );
-    REQUIRE( args.v1 == t_api.dispatch("pop").at(0) );
+        t_api.dispatch("push", args.v1);
+        t_api.dispatch("push", args.v2);
+        REQUIRE( args.v2 == t_api.dispatch("pop").at(0) );
+        REQUIRE( args.v1 == t_api.dispatch("pop").at(0) );
 
-    t_api.dispatch("push", args.v1);
-    t_api.dispatch("push", args.v2);
-    t_api.dispatch("push", args.v2);
-    t_api.dispatch("push", args.v1);
-    REQUIRE( args.v1 == t_api.dispatch("pop").at(0) );
-    REQUIRE( args.v2 == t_api.dispatch("pop").at(0) );
-    REQUIRE( args.v2 == t_api.dispatch("pop").at(0) );
-    REQUIRE( args.v1 == t_api.dispatch("pop").at(0) );
+        t_api.dispatch("push", args.v1);
+        t_api.dispatch("push", args.v2);
+        t_api.dispatch("push", args.v2);
+        t_api.dispatch("push", args.v1);
+        REQUIRE( args.v1 == t_api.dispatch("pop").at(0) );
+        REQUIRE( args.v2 == t_api.dispatch("pop").at(0) );
+        REQUIRE( args.v2 == t_api.dispatch("pop").at(0) );
+        REQUIRE( args.v1 == t_api.dispatch("pop").at(0) );
+    }
 }
