@@ -19,7 +19,14 @@ user    0m23.701s
 sys     0m0.933s
 ```
 
-And only 7 seconds under the Dell XPS 15 running Arch linux
+A little over 8 seconds on the Dell XPS 15 under a CentOS VM running in virtualbox
+```
+real    0m8.665s
+user    0m9.120s
+sys     0m0.328s
+```
+
+Again around 8 seconds under the Dell XPS 15 running Arch linux
 ```
 real    0m7.933s
 user    0m7.548s
