@@ -12,6 +12,31 @@ user    1m26.824s
 sys     0m2.433s
 ```
 
+Abysmal performance under cygwin even when pre-compiling the Catch2 runner
+```
+real    0m59.469s
+user    0m57.216s
+sys     0m1.869s
+```
+
+But only takes a little under 8 seconds on the Chuwi minibook under VC++9.0
+```
+20:28:13.05
+Microsoft (R) C/C++ Optimizing Compiler Version 19.24.28316 for x86
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+test2.cpp
+Microsoft (R) Incremental Linker Version 14.24.28316.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+/out:test2.exe
+test2.obj
+===============================================================================
+All tests passed (3 assertions in 1 test case)
+
+20:28:20.74
+```
+
 But only 26 seconds on the Dell XPS 15 under cygwin
 ```
 real    0m26.322s

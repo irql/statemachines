@@ -11,11 +11,11 @@ public:
     virtual std::vector<ouT> dispatch(std::string method, std::vector<T> args) = 0;
 
     std::vector<ouT> dispatch(std::string method) {
-        return this->dispatch(method, std::vector<T>());
+        return dispatch(method, std::vector<T>());
     }
 
     std::vector<ouT> dispatch(std::string method, T arg) {
-        return this->dispatch(method, std::vector<T>{arg});
+        return dispatch(method, std::vector<T>{arg});
     }
 };
 
@@ -27,11 +27,11 @@ private:
 public:
     std::vector<T> dispatch(std::string method, std::vector<T> args) {
         if(method == "push") {
-            this->stack.push(args.at(0));
+            stack.push(args.at(0));
             return std::vector<T>();
-        } else if(method == "pop") {
-            T top = this->stack.top();
-            this->stack.pop();
+        } else if(method == "pop" && !stack.empty()) {
+            T top = stack.top();
+            stack.pop();
             return std::vector<T>{top};
         }
         return std::vector<T>();
