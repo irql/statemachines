@@ -11,3 +11,10 @@ real    1m31.106s
 user    1m26.824s
 sys     0m2.433s
 ```
+
+But only 7 seconds on the Dell XPS 15 (under Arch linux)
+```
+real    0m7.933s
+user    0m7.548s
+sys     0m0.342s
+```
