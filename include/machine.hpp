@@ -100,6 +100,12 @@ class Machine {
 
     public:
 
+        Transition<T> &walk(void) {
+            Transition<T> &next = history.front();
+            history.pop();
+            return next;
+        }
+
         void progress(T input) {
             Transition<T> *t = this->current_state->transition(this, input, runtime);
             if(t == NULL) {
