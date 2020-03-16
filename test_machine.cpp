@@ -14,6 +14,8 @@ TEMPLATE_TEST_CASE("nop machine", "[machine]", bool, std::string) {
 
     SECTION("transition") {
         machine_nop.progress(args.v1);
-        REQUIRE(machine_nop.walk().previous == &state_inf);
+        REQUIRE(machine_nop.walk().previous->getName() == state_inf.getName());
     }
 }
+
+#undef _TEST_MACHINE

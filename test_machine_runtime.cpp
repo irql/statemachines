@@ -30,3 +30,5 @@ TEMPLATE_TEST_CASE("machine::runtime::Stack push and pop works", "[runtime]", bo
         REQUIRE( args.v1 == t_api.dispatch("pop").at(0) );
     }
 }
+
+#undef _TEST_MACHINE_RUNTIME
