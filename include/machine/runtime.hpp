@@ -25,14 +25,15 @@ private:
     std::stack<T> stack;
 
 public:
+    T tos;
     std::vector<T> dispatch(std::string method, std::vector<T> args) {
         if(method == "push") {
             stack.push(args.at(0));
             return std::vector<T>();
         } else if(method == "pop" && !stack.empty()) {
-            T top = stack.top();
+            tos = stack.top();
             stack.pop();
-            return std::vector<T>{top};
+            return std::vector<T>{tos};
         }
         return std::vector<T>();
     }

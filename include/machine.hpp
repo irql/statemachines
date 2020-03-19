@@ -27,9 +27,9 @@ class Edge {
         State<T> *target;
 
         bool (*transition)(T input) = NULL; // MAXIMUM DANGER
-        void (*side_effect)(T input, runtime::Base<T> *runtime) = NULL;
+        void (*side_effect)(T input, runtime::Base<T> &runtime) = NULL;
 
-        Edge(int t, State<T> *tg, bool (*tr)(T input), void (*s)(T, runtime::Base<T>*)) : latency(t), target(tg), transition(tr), side_effect(s) {
+        Edge(int t, State<T> *tg, bool (*tr)(T input), void (*s)(T, runtime::Base<T>&)) : latency(t), target(tg), transition(tr), side_effect(s) {
             if(this->transition == NULL) {
                 throw std::runtime_error("The Transition<T>::transition() function pointer cannot be null.");
             }
@@ -46,7 +46,7 @@ class State {
         int id = 0;
 
     public:
-        Transition<T> *transition(Machine<T> *machine, T input, runtime::Base<T> *runtime) {
+        Transition<T> *transition(Machine<T> *machine, T input, runtime::Base<T> &runtime) {
             for(Edge<T> e : *this->edges) {
                 if(e.transition(input)) {
                     if(e.side_effect != NULL) {
@@ -95,7 +95,7 @@ class Machine {
         std::queue<Transition<T>> history;
         State<T> *current_state;
         int state_count = 0;
-        runtime::Base<T> *runtime;
+        runtime::Base<T> &runtime;
         std::string name;
 
     public:
@@ -122,23 +122,9 @@ class Machine {
             }
         }
 
-        void debug_history() {
-            std::cout << name << ":" << typeid(this).name() << std::endl;
-            for(int i = 0; !history.empty();) {
-                Transition<T> t = history.front();
-                history.pop();
-                i += t.latency;
-                std::cout <<
-                    t.previous->getName() << ":" << t.previous->getId() << "\t-[" << t.input << "]-> " <<
-                    t.current->getName() << ":" << t.current->getId() << ",\t" <<
-                    i << "ns,\t" << t.latency << "ns" << std::endl;
-            }
-            std::cout << std::endl;
-        }
+        Machine(std::string n, State<T> *cs, runtime::Base<T> &r) : current_state(cs), runtime(r), name(n) {}
 
-        Machine(std::string n, State<T> *cs, runtime::Base<T> *r) : current_state(cs), runtime(r), name(n) {}
-
-        Machine(std::string n, State<T> *cs) : Machine(n, cs, nullptr) {}
+        Machine(std::string n, State<T> *cs) : Machine(n, cs, runtime::Stack<T>()) {}
 
 };
 
