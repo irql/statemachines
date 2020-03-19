@@ -1,4 +1,3 @@
-#define _TEST_MACHINE
 #include <catch2/catch.hpp>
 
 #include "include/catch_macros.h"
@@ -53,5 +52,3 @@ TEMPLATE_TEST_CASE("nop machine", "[machine]", bool, std::string, int) {
         REQUIRE(stack_api.tos == args.v2);
     }
 }
-
-#undef _TEST_MACHINE
