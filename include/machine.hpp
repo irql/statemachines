@@ -71,7 +71,7 @@ class State {
 
         std::string getName() { return name; }
 
-        State(std::string n, std::vector<Edge<T>> *e) : name(n), edges(e) {
+        State(std::string n, std::vector<Edge<T>> *e) : edges(e), name(n) {
             if(this->edges == NULL) {
                 throw std::runtime_error("State<T>::edges cannot be null.");
             }
@@ -86,7 +86,7 @@ class Transition {
         int latency;
         T input;
 
-        Transition(State<T> *ps, State<T> *cs, T i, int t) : previous(ps), current(cs), input(i), latency(t) {}
+        Transition(State<T> *ps, State<T> *cs, T i, int t) : previous(ps), current(cs), latency(t), input(i) {}
 };
 
 template <typename T>
@@ -136,7 +136,7 @@ class Machine {
             std::cout << std::endl;
         }
 
-        Machine(std::string n, State<T> *cs, runtime::Base<T> *r) : name(n), current_state(cs), runtime(r) {}
+        Machine(std::string n, State<T> *cs, runtime::Base<T> *r) : current_state(cs), runtime(r), name(n) {}
 
         Machine(std::string n, State<T> *cs) : Machine(n, cs, nullptr) {}
 

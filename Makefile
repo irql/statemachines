@@ -2,7 +2,7 @@ CC=g++
 CC_OPTS=-std=c++17 -Wall -I../Catch2/single_include
 TEST_OUT=test.exe
 
-.PHONY: clean test
+.PHONY: clean
 
 clean:
 	rm *.exe *.obj *.o *.stackdump
