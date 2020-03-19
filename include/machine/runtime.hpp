@@ -20,6 +20,14 @@ public:
 };
 
 template <class T>
+class Nop : virtual public Base<T> {
+public:
+    std::vector<T> dispatch(std::string method, std::vector<T> args) {
+        return std::vector<T>();
+    }
+};
+
+template <class T>
 class Stack : virtual public Base<T> {
 private:
     std::stack<T> stack;

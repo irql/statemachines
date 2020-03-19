@@ -7,11 +7,12 @@ TEMPLATE_TEST_CASE("nop machine", "[machine]", bool, std::string, int) {
     static _args<TestType> args;
 
     std::vector<machine::Edge<TestType>> edges;
+    machine::runtime::Nop<TestType> nop_runtime;
     machine::State<TestType> state_inf("nop", &edges);
 
     edges.push_back(machine::Edge<TestType>(5, &state_inf, [](TestType input) -> bool { return true; }));
 
-    machine::Machine<TestType> machine_nop("nop", &state_inf);
+    machine::Machine<TestType> machine_nop("nop", &state_inf, nop_runtime);
 
     SECTION("transition") {
         machine_nop.progress(args.v1);

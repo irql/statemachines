@@ -123,9 +123,6 @@ class Machine {
         }
 
         Machine(std::string n, State<T> *cs, runtime::Base<T> &r) : current_state(cs), runtime(r), name(n) {}
-
-        Machine(std::string n, State<T> *cs) : Machine(n, cs, runtime::Stack<T>()) {}
-
 };
 
 } // end namespace
