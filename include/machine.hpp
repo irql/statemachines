@@ -41,13 +41,14 @@ class Edge {
 template <typename T>
 class State {
     private:
-        std::vector<Edge<T>> *edges;
         std::string name;
         int id = 0;
 
     public:
+        std::vector<Edge<T>> edges;
+
         Transition<T> *transition(Machine<T> *machine, T input, runtime::Base<T> &runtime) {
-            for(Edge<T> e : *this->edges) {
+            for(Edge<T> e : this->edges) {
                 if(e.transition(input)) {
                     if(e.side_effect != NULL) {
                         e.side_effect(input, runtime);
@@ -71,11 +72,7 @@ class State {
 
         std::string getName() { return name; }
 
-        State(std::string n, std::vector<Edge<T>> *e) : edges(e), name(n) {
-            if(this->edges == NULL) {
-                throw std::runtime_error("State<T>::edges cannot be null.");
-            }
-        }
+        State(std::string n) : name(n) { }
 };
 
 template <typename T>

@@ -6,11 +6,11 @@
 TEMPLATE_TEST_CASE("nop machine", "[machine]", bool, std::string, int) {
     static _args<TestType> args;
 
-    std::vector<machine::Edge<TestType>> edges;
-    machine::runtime::Nop<TestType> nop_runtime;
-    machine::State<TestType> state_inf("nop", &edges);
+    machine::State<TestType> state_inf("nop");
 
-    edges.push_back(machine::Edge<TestType>(5, &state_inf, [](TestType input) -> bool { return true; }));
+    state_inf.edges.push_back(machine::Edge<TestType>(5, &state_inf, [](TestType input) -> bool { return true; }));
+
+    machine::runtime::Nop<TestType> nop_runtime;
 
     machine::Machine<TestType> machine_nop("nop", &state_inf, nop_runtime);
 
@@ -21,16 +21,17 @@ TEMPLATE_TEST_CASE("nop machine", "[machine]", bool, std::string, int) {
         REQUIRE(machine_nop.walk().previous->getName() == state_inf.getName());
     }
 
+    machine::State<TestType> pp_state("pp_nop");
+
     machine::runtime::Stack<TestType> stack_api;
-    std::vector<machine::Edge<TestType>> pp_edges;
-    machine::State<TestType> pp_state("pp_nop", &pp_edges);
+
     machine::Machine<TestType> machine_pp("pp", &pp_state, stack_api);
 
     // You must ensure that all possible transitions are defined by the edges.
     // Note that there must also be a one to one correlation between edge and
     // potential activation / transition in the function domain. That means,
     // there must always be a catch-all.
-    pp_edges.push_back(machine::Edge<TestType>(6, &pp_state, [](TestType input) -> bool {
+    pp_state.edges.push_back(machine::Edge<TestType>(6, &pp_state, [](TestType input) -> bool {
                 if(input == args.v1) {
                     return true;
                 }
@@ -38,7 +39,7 @@ TEMPLATE_TEST_CASE("nop machine", "[machine]", bool, std::string, int) {
             }, [](TestType input, machine::runtime::Base<TestType> &runtime) -> void {
                 runtime.dispatch("push", args.v2);
             }));
-    pp_edges.push_back(machine::Edge<TestType>(6, &pp_state, [](TestType input) -> bool {
+    pp_state.edges.push_back(machine::Edge<TestType>(6, &pp_state, [](TestType input) -> bool {
                 if(input != args.v1) {
                     return true;
                 }
