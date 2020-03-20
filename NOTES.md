@@ -37,6 +37,20 @@ All tests passed (3 assertions in 1 test case)
 20:28:20.74
 ```
 
+On the Chuwi under an Archlinux VM, takes 40 seconds initially
+```
+real    0m40.775s
+user    0m35.329s
+sys     0m2.938s
+```
+
+But once the test runner is built, takes 9.8s under Arch:
+```
+real    0m9.896s
+user    0m8.237s
+sys     0m1.110s
+```
+
 But only 26 seconds on the Dell XPS 15 under cygwin
 ```
 real    0m26.322s
