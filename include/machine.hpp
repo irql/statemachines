@@ -47,7 +47,7 @@ class State {
     public:
         std::vector<Edge<T>> edges;
 
-        Transition<T> *transition(Machine<T> *machine, T input, runtime::Base<T> &runtime) {
+        Transition<T> *transition(T input, runtime::Base<T> &runtime) {
             for(Edge<T> e : this->edges) {
                 if(e.transition(input)) {
                     if(e.side_effect != NULL) {
@@ -104,7 +104,7 @@ class Machine {
         }
 
         void progress(T input) {
-            Transition<T> *t = this->current_state->transition(this, input, runtime);
+            Transition<T> *t = this->current_state->transition(input, runtime);
             if(t == NULL) {
                 throw std::runtime_error("The transition returned by State<T>::transition(T) cannot be null.");
             } else {

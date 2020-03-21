@@ -2,6 +2,7 @@
 #define RUNTIME_HPP_INCLUDED
 
 #include <stack>
+#include <vector>
 
 namespace machine::runtime {
 
